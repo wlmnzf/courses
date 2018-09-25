@@ -1,0 +1,335 @@
+--- origin/translate.c	2018-05-07 11:44:38.036715000 +0800
++++ qemu-2.7.0/target-i386/translate.c	2018-05-15 09:36:27.664000000 +0800
+@@ -4865,7 +4865,7 @@
+         case 2: /* call Ev */
+             /* QEMU-HOMEWORK CFI-target, MONITOR CALL module */
+             if(coarsecfi_enabled){
+-		s->have_call = 1;
++		      s->have_call = 1;
+             }
+ 
+             /* XXX: optimize if memory (no 'and' is necessary) */
+@@ -4874,12 +4874,33 @@
+             }
+             next_eip = s->pc - s->cs_base;
+             tcg_gen_movi_tl(cpu_T1, next_eip);
++            //tval = (int32_t)insn_get(env, s, MO_32);
++            // tval+=next_eip;
++            // s->tb->call_nexteip=next_eip;
++            // s->tb->cur_instruction=cpu_ldq_code(env,s->pc-4);
++            // = mo_b_d(b, dflag);
++            // s->tb->modrm=modrm;// = cpu_ldub_code(env, s->pc++);
++            //s->tb->mod=mod ;//= (modrm >> 6) & 3;
++            // s->tb->rm=rm ;//= (modrm & 7) | REX_B(s);
++            // s->tb-> op =op;
++
+             gen_push_v(s, cpu_T1);
+             gen_op_jmp_v(cpu_T0);
++            // int pi=tcg_ctx.gen_next_parm_idx-3;
++
++            // tcg_ctx.gen_opparam_buf[pi + 0] = a1;
++            // s->tb->ot=tcg_ctx.gen_opparam_buf[pi + 1];
++            // s->tb->mod=tcg_ctx.gen_opparam_buf[pi + 2];
++
++            // s->tb->ot== cpu_regs[(int)cpu_T1];
++            // s->tb->mod= cpu_regs[(int)cpu_T0];
+             gen_bnd_jmp(s);
+             gen_eob(s);
+             break;
+         case 3: /* lcall Ev */
++            if(coarsecfi_enabled){
++                 s->have_call = 1;
++            }
+             gen_op_ld_v(s, ot, cpu_T1, cpu_A0);
+             gen_add_A0_im(s, 1 << ot);
+             gen_op_ld_v(s, MO_16, cpu_T0, cpu_A0);
+@@ -4900,8 +4921,9 @@
+         case 4: /* jmp Ev */
+             /* QEMU-HOMEWORK CFI-target, MONITOR JMP module ***/
+             if(coarsecfi_enabled){
+-	        s->have_jmp = 1;
+-	    }
++	           s->have_jmp = 1;
++	       }
++
+             if (dflag == MO_16) {
+                 tcg_gen_ext16u_tl(cpu_T0, cpu_T0);
+             }
+@@ -4910,6 +4932,10 @@
+             gen_eob(s);
+             break;
+         case 5: /* ljmp Ev */
++            if(coarsecfi_enabled){
++                s->have_jmp = 1;
++            }
++
+             gen_op_ld_v(s, ot, cpu_T1, cpu_A0);
+             gen_add_A0_im(s, 1 << ot);
+             gen_op_ld_v(s, MO_16, cpu_T0, cpu_A0);
+@@ -6290,7 +6316,9 @@
+     	/* QEMU-HOMEWORK CFI-target, MONITOR RET module */
+     	if(coarsecfi_enabled){
+     		s->have_ret = 1;
++            //s->tb->cur_instruction=cpu_ldq_code(env,s->pc-1);
+     	}
++
+         val = cpu_ldsw_code(env, s->pc);
+         s->pc += 2;
+         ot = gen_pop_T0(s);
+@@ -6304,7 +6332,9 @@
+     	/* QEMU-HOMEWORK CFI-target, MONITOR RET module */
+     	if(coarsecfi_enabled){
+     		s->have_ret = 1;
++            //s->tb->cur_instruction=cpu_ldq_code(env,s->pc-1);
+     	}
++
+         ot = gen_pop_T0(s);
+         gen_pop_update(s, ot);
+         /* Note that gen_pop_T0 uses a zero-extending load.  */
+@@ -6313,6 +6343,10 @@
+         gen_eob(s);
+         break;
+     case 0xca: /* lret im */
++        if(coarsecfi_enabled){
++            s->have_ret = 1;
++            //s->tb->cur_instruction=cpu_ldq_code(env,s->pc-1);
++        }
+         val = cpu_ldsw_code(env, s->pc);
+         s->pc += 2;
+     do_lret:
+@@ -6338,9 +6372,19 @@
+         gen_eob(s);
+         break;
+     case 0xcb: /* lret */
++        if(coarsecfi_enabled){
++            s->have_ret = 1;
++            //s->tb->cur_instruction=cpu_ldq_code(env,s->pc-1);
++        }
++
+         val = 0;
+         goto do_lret;
+     case 0xcf: /* iret */
++        if(coarsecfi_enabled){
++            s->have_ret = 1;
++            //s->tb->cur_instruction=cpu_ldq_code(env,s->pc-1);
++        }
++
+         gen_svm_check_intercept(s, pc_start, SVM_EXIT_IRET);
+         if (!s->pe) {
+             /* real mode */
+@@ -6362,6 +6406,12 @@
+         break;
+     case 0xe8: /* call im */
+         {
++            if(coarsecfi_enabled){
++              s->have_call = 1;
++             // s->tb->cur_instruction=cpu_ldq_code(env,s->pc-4);
++
++            }
++
+             if (dflag != MO_16) {
+                 tval = (int32_t)insn_get(env, s, MO_32);
+             } else {
+@@ -6382,6 +6432,10 @@
+         break;
+     case 0x9a: /* lcall im */
+         {
++            if(coarsecfi_enabled){
++                s->have_call = 1;
++            }
++
+             unsigned int selector, offset;
+ 
+             if (CODE64(s))
+@@ -6395,6 +6449,10 @@
+         }
+         goto do_lcall;
+     case 0xe9: /* jmp im */
++        if(coarsecfi_enabled){
++                s->have_jmp = 1;
++        }
++
+         if (dflag != MO_16) {
+             tval = (int32_t)insn_get(env, s, MO_32);
+         } else {
+@@ -6411,6 +6469,10 @@
+         break;
+     case 0xea: /* ljmp im */
+         {
++            if(coarsecfi_enabled){
++                s->have_jmp = 1;
++            }
++
+             unsigned int selector, offset;
+ 
+             if (CODE64(s))
+@@ -6424,6 +6486,10 @@
+         }
+         goto do_ljmp;
+     case 0xeb: /* jmp Jb */
++        if(coarsecfi_enabled){
++                s->have_jmp = 1;
++            }
++
+         tval = (int8_t)insn_get(env, s, MO_8);
+         tval += s->pc - s->cs_base;
+         if (dflag == MO_16) {
+@@ -7008,6 +7074,10 @@
+         break;
+ #ifdef TARGET_X86_64
+     case 0x105: /* syscall */
++        if(coarsecfi_enabled){
++            s->have_call = 1;
++        }
++
+         /* XXX: is it usable in real mode ? */
+         gen_update_cc_op(s);
+         gen_jmp_im(pc_start - s->cs_base);
+@@ -7015,6 +7085,10 @@
+         gen_eob(s);
+         break;
+     case 0x107: /* sysret */
++            if(coarsecfi_enabled){
++            s->have_ret = 1;
++           // s->tb->cur_instruction=cpu_ldq_code(env,s->pc);
++        }
+         if (!s->pe) {
+             gen_exception(s, EXCP0D_GPF, pc_start - s->cs_base);
+         } else {
+@@ -7229,6 +7303,11 @@
+             if (!(s->flags & HF_SVME_MASK)) {
+                 goto illegal_op;
+             }
++
++            if(coarsecfi_enabled){
++                s->have_call = 1;
++            }
++
+             gen_update_cc_op(s);
+             gen_jmp_im(pc_start - s->cs_base);
+             gen_helper_vmmcall(cpu_env);
+@@ -8127,8 +8206,124 @@
+     return s->pc;
+ }
+ 
++void init_call()
++{
++     FILE *fp=NULL;
++     if((fp=fopen("../vul.call","r"))== NULL)
++        {
++         printf("The file can not be opened.\n"); 
++         return;
++        }
++
++    char buffer[200];
++    int index=0;
++    char* token=NULL;
++    char* str=NULL;
++    int tmp_i=0;
++   
++    while(fgets(buffer,200,fp)!=NULL)
++    {
++        if(index==0)
++        {
++            index++;
++            continue;
++        }
++        token = strtok( buffer, "\t");
++        tmp_i=0;
++        while( token != NULL )
++            {
++                
++                if(tmp_i==0)
++                {
++                    cfg_calls[index-1].call_addr=strtol(token, &str, 16);
++                    tmp_i++;
++                    // printf("1:%x\n",token);
++                }
++                else
++                {
++                    // printf("2:%x\n",token);
++                    cfg_calls[index-1].callnext_addr=strtol(token, &str, 16);
++                    break;
++                }
++               
++                token = strtok( NULL, "\t");
++             }
++
++        index++;
++
++    }
++    cfg_call_cnt=index-1;
++    //printf("%d\n",cfg_call_cnt );
++    fclose(fp);
++
++}
++
++void init_function()
++{
++     FILE *fp=NULL;
++     if((fp=fopen("../vul.func","r"))== NULL)
++        {
++         printf("The file can not be opened.\n"); 
++         return;
++        }
++
++    char buffer[200];
++    int index=0;
++    char* token=NULL;
++    char* str=NULL;
++    int tmp_i=0;
++   
++    while(fgets(buffer,200,fp)!=NULL)
++    {
++        if(index==0)
++        {
++            index++;
++            continue;
++        }
++
++        token = strtok( buffer, "\t");
++
++        tmp_i=0;
++        while( token != NULL )
++            {
++                
++                if(tmp_i==0)
++                {
++                    cfg_functions[index-1].start_addr=strtol(token, &str, 16);
++                    tmp_i++;
++                }
++                else
++                {
++
++                    cfg_functions[index-1].length=atoi(token);
++                    // printf("%d\n",cfg_functions[index-1].length);
++                    break;
++                }
++               
++                token = strtok( NULL, "\t");
++             }
++
++        index++;
++
++    }
++    cfg_function_cnt=index-1;
++    fclose(fp);
++
++}
++
+ void tcg_x86_init(void)
+ {
++   //init
++    cfg_call_cnt=0;
++    cfg_function_cnt=0;
++
++    init_call();
++    init_function();
++
++    initStack(&stack); 
++
++
++
+     static const char reg_names[CPU_NB_REGS][4] = {
+ #ifdef TARGET_X86_64
+         [R_EAX] = "rax",

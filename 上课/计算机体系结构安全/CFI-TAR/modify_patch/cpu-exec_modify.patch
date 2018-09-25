@@ -1,0 +1,211 @@
+--- origin/cpu-exec.c	2018-05-07 11:44:38.052715000 +0800
++++ qemu-2.7.0/cpu-exec.c	2018-05-18 15:57:47.279538844 +0800
+@@ -33,6 +33,7 @@
+ #include "hw/i386/apic.h"
+ #endif
+ #include "sysemu/replay.h"
++// #include <stdio.h>
+ 
+ /* -icount align implementation. */
+ 
+@@ -134,35 +135,154 @@
+ }
+ #endif /* CONFIG USER ONLY */
+ 
++
++
++
+ /* QEMU-HOMEWORK function module
+  * MONITOR JMP module */
+-static inline void grin_handle_jmp()
++static inline void grin_handle_jmp(TranslationBlock *itb,target_ulong eip)
+ {
+-	/******************************
+-	 *
+-	 *           TODO.....
+-	 *
+-	 ******************************/
++    //long local_addr=itb->call_addr;
++    //printf("jmp_addr:%x\n",itb->jmp_addr);
++    //printf("jmp_test_addr:%x\n",eip);
++    //printf("jmp_last_addr:%x\n\n",l_eip);
++    //printf("code:%s\n",itb->tc_ptr);
++    //printf("data:%x\n",itb->tc_search);
++    //printf("jmp_addr:%x\n",itb->jmp_list_next[1] );
++    //printf("this_tb:%x\n",itb);
++    //printf("jmp_ins:%x\n",((TranslationBlock*)itb->page_next[2])->orig_tb);
++    //printf("jmp_addr:%x\n",itb->jmp_target_addr[0] );
++    //printf("jmp_addr:%x\n",itb->jmp_target_addr[0] );
++    //printf("jmp_addr:%x\n",itb->jmp_target_addr[1] );
++    //printf("jmp_adtest 0:%x\n",itb->jmp_list_next[0] );
++    //printf("jmp_adtest 1:%x\n",itb->jmp_list_next[1] );
++    //printf("jmp_adtest 2:%x\n",itb->jmp_list_next[2] );
++    if(itb->jmp_addr>=0x400000&&itb->jmp_addr<=0x4fffff&&eip>=0x400000&&eip<=0x4fffff)
++    {
++      int i=0;
++      int flag=0;
++      for(i=0;i<cfg_function_cnt;i++)
++      {
++        // if(eip==0x400656)
++        // {
++        //   printf("FUN:%x   %x\n",cfg_functions[i].start_addr,cfg_functions[i].start_addr+cfg_functions[i].length);
++        // }
++          if(cfg_functions[i].start_addr==eip||cfg_functions[i].start_addr<=eip&&eip<=(cfg_functions[i].start_addr+cfg_functions[i].length))
++          {
++              flag=1;
++              break;
++          }
++      }
++
++       if(flag==0)
++       {
++           printf("\ntype:jmp    addr:%x    jmp-addr:%x\n\n",itb->jmp_addr,eip);
++       }
++       else
++       {
++         printf("[normal]type:jmp   addr:%x\n",itb->jmp_addr);
++       }
++    }
++   
+ }
+ /* QEMU-HOMEWORK function module
+  * MONITOR CALL module */
+-static inline  void grin_handle_call()
++static inline  void grin_handle_call(TranslationBlock *itb,target_ulong eip)
+ {
+-	/******************************
+-	 *
+-	 *           TODO.....
+-	 *
+-	 ******************************/	
++
++     // printf("call_addr:%x, callnext_addr:%x\n",itb->call_addr,itb->callnext_addr );
++     // printf("call_test_addr:%x\n",eip);
++     // printf("call_last_addr:%x\n\n",l_eip);
++     // printf("data:%x\n",itb->tc_search);
++     // printf("cur_instruction: %x\n", itb->cur_instruction);
++     // printf("ot: %x\n", itb->ot);
++     // printf("mod: %x\n", itb->mod);
++     // printf("rm: %x\n", itb->rm);
++     // printf("op: %x\n", itb->op);
++     // s->tb->modrm=modrm;// = cpu_ldub_code(env, s->pc++);
++     // s->tb->mod=mod ;//= (modrm >> 6) & 3;
++     // s->tb->rm=rm ;//= (modrm & 7) | REX_B(s);
++     // s->tb-> op =op;
++     // printf("this_tb:%x\n",itb);
++     // printf("call_ins:%x\n",((TranslationBlock*)itb->page_next[2])->orig_tb);
++     // printf("call_adtest 0:%x\n",itb->jmp_list_next[0] );
++     // printf("call_adtest 1:%x\n",itb->jmp_list_next[1] );
++     // printf("call_adtest 2:%x\n",itb->jmp_list_next[2] );
++
++ if(itb->call_addr>=0x400000&&itb->call_addr<=0x4fffff&&eip>=0x400000&&eip<=0x4fffff)
++    {
++     int i=0;
++     int flag=0;
++
++
++     for(i=0;i<cfg_call_cnt;i++)
++     {
++        if(cfg_calls[i].call_addr==itb->call_addr&&cfg_calls[i].callnext_addr==itb->callnext_addr)
++        {
++            for(i=0;i<cfg_function_cnt;i++)
++             {
++                if(cfg_functions[i].start_addr==eip)
++                {
++                    flag=1;
++                    pushStack(&stack,itb->call_addr,itb->callnext_addr);
++                    break;
++                }
++             }
++             break;
++        }
++     }
++
++
++
++     if(flag==0)
++     {
++         printf("\ntype:call    addr:%x    call-addr:%x\n\n",itb->call_addr,eip);
++     }
++      else
++     {
++       printf("[normal]type:call   addr:%x\n",itb->call_addr);
++     }
++   }
++	
+ }
+ /* QEMU-HOMEWORK function module
+  * MONITOR RET module */
+-static inline void grin_handle_ret()
++static inline void grin_handle_ret(TranslationBlock *itb,target_ulong eip)
+ {
+-	/******************************
+-	 *
+-	 *           TODO.....
+-	 *
+-	 ******************************/
++     // printf("ret_addr:%x\n",itb->ret_addr);
++     // printf("ret_test_addr:%x\n",eip);
++     // printf("ret_last_addr:%x\n\n",l_eip);
++     // printf("code:%s\n",itb->tc_ptr);
++     // printf("data:%x\n",itb->tc_search);
++
++   if(itb->ret_addr>=0x400000&&itb->ret_addr<=0x4fffff&&eip>=0x400000&&eip<=0x4fffff)
++    {
++      target_ulong call_addr=0;
++      target_ulong callnext_addr=0;
++      int flag=0;
++      if(findAndDelete(&stack, &call_addr,&callnext_addr,eip))
++          {
++            // printf("\n=======TOP========\n");
++            // printf("call:%x    call_next:%x\n",call_addr,callnext_addr);
++            // printf("===================\n");
++            // if(eip==callnext_addr)
++            // {
++                  flag=1;
++                  // popStack(&stack, &call_addr,&callnext_addr);
++            // }
++          }
++
++      
++       if(flag==0)
++       {
++           printf("\ntype:return    addr:%x    return-addr:%x\n\n",itb->ret_addr,eip);
++           // printf("IS CODE:%x\n\n",itb->cur_instruction);
++       }
++      else
++       {
++         printf("[normal]type:return   addr:%x\n",itb->ret_addr);
++       }
++   }
+ }
+ 
+ /* Execute a TB, and fix up the CPU state afterwards if necessary */
+@@ -176,6 +296,7 @@
+ 
+     /* QEMU-HOMEWORK, MONITOR variable module */
+     X86CPU *tmpcpu = X86_CPU(cpu);
++    target_ulong c_eip=tmpcpu->env.eip;
+     target_ulong pc_var;
+ 
+     qemu_log_mask_and_addr(CPU_LOG_EXEC, itb->pc,
+@@ -235,16 +356,16 @@
+      * Please specify arguements for grin_handle_* function.	         */
+     /* QEMU-HOMEWORK, MONITOR JMP module */
+         if(coarsecfi_enabled&&itb->JmpFlagM){
+-	    grin_handle_jmp();
++	         grin_handle_jmp(itb,tmpcpu->env.eip);
+         }
+ 
+     /* QEMU-HOMEWORK, MONITOR CALL module */
+         if (coarsecfi_enabled&&itb->CallFlagM){
+-            grin_handle_call();
++            grin_handle_call(itb,tmpcpu->env.eip);
+         }
+         /* QEMU-HOMEWORK, MONITOR RET module */
+         if (coarsecfi_enabled&&itb->RetFlagM){
+-            grin_handle_ret();
++            grin_handle_ret(itb,tmpcpu->env.eip);
+         }
+ 
+     return ret;

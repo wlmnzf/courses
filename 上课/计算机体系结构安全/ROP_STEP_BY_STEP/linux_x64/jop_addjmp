@@ -1,0 +1,395 @@
+Gadgets information
+============================================================
+0x0000000000196ddf : add ah, al ; add ebp, edx ; jmp rsp
+0x00000000001b0afb : add ah, al ; add qword ptr [r8], r8 ; add byte ptr [rax - 0xb], dh ; jmp qword ptr [rcx]
+0x00000000001953f1 : add ah, bh ; jmp rax
+0x000000000004e619 : add al, 0x13 ; add byte ptr [rax], al ; add rax, rsi ; jmp rax
+0x00000000000bf1e5 : add al, 0x24 ; add dword ptr [rax], eax ; add byte ptr [rax], al ; jmp 0xbf1b6
+0x0000000000198a20 : add al, 0x24 ; jmp rsp
+0x0000000000063886 : add al, 0x81 ; add rcx, rax ; jmp rcx
+0x000000000009e8c9 : add al, 0x82 ; add r10, rax ; jmp r10
+0x00000000000c325a : add al, 0x82 ; add rdx, r8 ; jmp rdx
+0x00000000000210b5 : add al, 0x82 ; add rdx, rax ; jmp rdx
+0x000000000002ebb9 : add al, 0x86 ; add rax, r14 ; jmp rax
+0x000000000006c1d4 : add al, 0x86 ; add rax, rsi ; jmp rax
+0x000000000006c303 : add al, 0x86 ; add rsi, rax ; jmp rsi
+0x00000000000d3fe3 : add al, 0x87 ; add rax, rdi ; jmp rax
+0x000000000009e992 : add al, 0x8a ; add r10, rax ; jmp r10
+0x000000000002e8ef : add al, 0x8e ; add rsi, rax ; jmp rsi
+0x000000000004b604 : add al, 0x90 ; add rax, rdi ; jmp rax
+0x0000000000197320 : add al, 0x9a ; jmp 0x197326
+0x00000000000aabc9 : add al, 0xbe ; add rsi, rax ; jmp rsi
+0x000000000012ddb9 : add al, 0xc2 ; jmp rax
+0x0000000000188095 : add al, 0xf2 ; jmp rax
+0x00000000001954dd : add al, 0xfc ; jmp qword ptr [rax]
+0x0000000000132def : add al, byte ptr [rax] ; add byte ptr [rax], al ; add rdi, 0x10 ; jmp rcx
+0x000000000013586f : add al, byte ptr [rax] ; add byte ptr [rax], al ; add rdi, 0x58 ; jmp rcx
+0x0000000000134fcf : add al, byte ptr [rax] ; add byte ptr [rax], al ; add rdi, 0x68 ; jmp rcx
+0x000000000005f80d : add al, byte ptr [rax] ; add byte ptr [rax], al ; jmp 0x5baf6
+0x0000000000067494 : add al, byte ptr [rax] ; add byte ptr [rax], al ; jmp 0x63702
+0x0000000000102882 : add al, byte ptr [rax] ; add byte ptr [rax], al ; jmp rax
+0x000000000010f93b : add al, ch ; jmp rdx
+0x00000000001954f9 : add bh, ah ; jmp rax
+0x00000000001a4d81 : add bh, ch ; jmp rsp
+0x00000000001a06bd : add byte ptr [r8], al ; jmp 0x1a06c9
+0x00000000001a06bf : add byte ptr [rax + 0x26], al ; jmp 0x1a06c7
+0x000000000019d9d7 : add byte ptr [rax + 0x4a], bh ; jmp 0x1b9ce3
+0x00000000001a0b17 : add byte ptr [rax + 0x53], cl ; jmp 0x1a0b1f
+0x0000000000063883 : add byte ptr [rax + 0x63], cl ; add al, 0x81 ; add rcx, rax ; jmp rcx
+0x000000000006bc83 : add byte ptr [rax + 0x63], cl ; add al, 0x82 ; add rdx, rax ; jmp rdx
+0x000000000006c94b : add byte ptr [rax + 0x63], cl ; add al, 0x86 ; add rax, rsi ; jmp rax
+0x000000000002e8ec : add byte ptr [rax + 0x63], cl ; add al, 0x8e ; add rsi, rax ; jmp rsi
+0x000000000004b601 : add byte ptr [rax + 0x63], cl ; add al, 0x90 ; add rax, rdi ; jmp rax
+0x00000000000aabc6 : add byte ptr [rax + 0x63], cl ; add al, 0xbe ; add rsi, rax ; jmp rsi
+0x00000000001975c7 : add byte ptr [rax + rax*4 - 0x13], ah ; jmp rsp
+0x00000000001acbd3 : add byte ptr [rax + rdx - 0x4327ffff], bl ; jmp qword ptr [rdi]
+0x00000000001a0b93 : add byte ptr [rax + rdx*2], bl ; add byte ptr [rax - 0x56], bl ; jmp 0x1a0ba3
+0x00000000001ace4f : add byte ptr [rax - 0x26], ah ; jmp qword ptr [rcx]
+0x00000000001ace37 : add byte ptr [rax - 0x26], cl ; jmp qword ptr [rcx]
+0x00000000001a0b97 : add byte ptr [rax - 0x56], bl ; jmp 0x1a0b9f
+0x000000000012ddb6 : add byte ptr [rax - 0x75], cl ; add al, 0xc2 ; jmp rax
+0x000000000007b706 : add byte ptr [rax - 0x75], cl ; jmp rax
+0x000000000007019f : add byte ptr [rax - 0x77], cl ; jmp 0x48f58af8
+0x00000000000be4d5 : add byte ptr [rax - 0x77], cl ; jmp 0xffffffffbece6e2b
+0x0000000000084be2 : add byte ptr [rax - 0x7d], cl ; jmp qword ptr [rax]
+0x00000000001b0b00 : add byte ptr [rax - 0xb], dh ; jmp qword ptr [rcx]
+0x000000000010e74e : add byte ptr [rax], ah ; jmp 0x10e718
+0x000000000019731e : add byte ptr [rax], al ; add al, 0x9a ; jmp 0x197328
+0x000000000007b704 : add byte ptr [rax], al ; add byte ptr [rax - 0x75], cl ; jmp rax
+0x000000000017585a : add byte ptr [rax], al ; add byte ptr [rax], al ; add byte ptr [rax], al ; add byte ptr [rdi - 0x15], ah ; jmp rax
+0x000000000017585b : add byte ptr [rax], al ; add byte ptr [rax], al ; add byte ptr [rax], al ; jmp 0x17586b
+0x000000000017585c : add byte ptr [rax], al ; add byte ptr [rax], al ; add byte ptr [rdi - 0x15], ah ; jmp rax
+0x0000000000059cfc : add byte ptr [rax], al ; add byte ptr [rax], al ; add rax, rcx ; jmp rax
+0x000000000004db0e : add byte ptr [rax], al ; add byte ptr [rax], al ; add rax, rsi ; jmp rax
+0x000000000017585d : add byte ptr [rax], al ; add byte ptr [rax], al ; jmp 0x175869
+0x000000000006084e : add byte ptr [rax], al ; add byte ptr [rax], al ; jmp 0x5ca9d
+0x00000000000bf711 : add byte ptr [rax], al ; add byte ptr [rax], al ; jmp 0xbb947
+0x0000000000058e19 : add byte ptr [rax], al ; add byte ptr [rax], al ; jmp rax
+0x00000000000d9808 : add byte ptr [rax], al ; add byte ptr [rcx + rcx*4 - 0x3e], cl ; jmp 0xd981f
+0x000000000019ccce : add byte ptr [rax], al ; add byte ptr [rcx - 3], dh ; jmp qword ptr [rdi]
+0x000000000017585e : add byte ptr [rax], al ; add byte ptr [rdi - 0x15], ah ; jmp rax
+0x000000000019e00e : add byte ptr [rax], al ; add byte ptr [rdx - 0x17], dh ; jmp qword ptr [rsi]
+0x00000000001a682e : add byte ptr [rax], al ; add byte ptr [rsi - 0x12], bh ; jmp qword ptr [rcx]
+0x0000000000059820 : add byte ptr [rax], al ; add rax, rcx ; jmp rax
+0x000000000004da4e : add byte ptr [rax], al ; add rax, rsi ; jmp rax
+0x0000000000132df1 : add byte ptr [rax], al ; add rdi, 0x10 ; jmp rcx
+0x0000000000135871 : add byte ptr [rax], al ; add rdi, 0x58 ; jmp rcx
+0x0000000000134fd1 : add byte ptr [rax], al ; add rdi, 0x68 ; jmp rcx
+0x0000000000132254 : add byte ptr [rax], al ; add rdi, 0xc8 ; jmp rcx
+0x0000000000020b8b : add byte ptr [rax], al ; add rsp, 0x28 ; jmp rax
+0x000000000008d85a : add byte ptr [rax], al ; add rsp, 8 ; jmp rax
+0x000000000017585f : add byte ptr [rax], al ; jmp 0x175867
+0x00000000001a06be : add byte ptr [rax], al ; jmp 0x1a06c8
+0x000000000005f80f : add byte ptr [rax], al ; jmp 0x5baf4
+0x0000000000060850 : add byte ptr [rax], al ; jmp 0x5ca9b
+0x0000000000067496 : add byte ptr [rax], al ; jmp 0x63700
+0x000000000007b5dc : add byte ptr [rax], al ; jmp 0x7b5c2
+0x00000000000bf713 : add byte ptr [rax], al ; jmp 0xbb945
+0x00000000000bf1e9 : add byte ptr [rax], al ; jmp 0xbf1b2
+0x0000000000035325 : add byte ptr [rax], al ; jmp rax
+0x000000000013225b : add byte ptr [rax], al ; jmp rcx
+0x0000000000083b62 : add byte ptr [rbp + 0xa], dh ; jmp 0x83b91
+0x000000000007ef51 : add byte ptr [rbp + 0xb], dh ; jmp 0x7ef81
+0x00000000001974b7 : add byte ptr [rbp + rcx*2 - 0x13], al ; jmp rsp
+0x000000000019a2cf : add byte ptr [rbp + rdi*8 - 9], al ; jmp rsp
+0x000000000019a687 : add byte ptr [rbp - 8], dl ; jmp rsp
+0x00000000001a06bb : add byte ptr [rbx + rcx*2 + 0x26400000], al ; jmp 0x1a06cb
+0x00000000001972a7 : add byte ptr [rbx + rdi - 0x15], ah ; jmp rsp
+0x0000000000196d9f : add byte ptr [rbx + rdi*8 - 0x17], al ; jmp rsp
+0x000000000019afc7 : add byte ptr [rbx + rdi*8 - 7], al ; jmp rsp
+0x000000000019847f : add byte ptr [rbx + rsi*8 - 0x10], dl ; jmp rsp
+0x0000000000194ef4 : add byte ptr [rbx - 5], cl ; jmp rax
+0x0000000000199f67 : add byte ptr [rbx - 9], dh ; jmp rsp
+0x000000000009e8c6 : add byte ptr [rcx + 0x63], cl ; add al, 0x82 ; add r10, rax ; jmp r10
+0x0000000000085548 : add byte ptr [rcx + rax - 0x18], cl ; jmp rax
+0x000000000019b077 : add byte ptr [rcx + rbx - 6], ah ; jmp rsp
+0x000000000019a5e7 : add byte ptr [rcx + rcx*2 - 8], al ; jmp rsp
+0x00000000000d980a : add byte ptr [rcx + rcx*4 - 0x3e], cl ; jmp 0xd981d
+0x000000000019b6df : add byte ptr [rcx + rcx*8 - 6], dh ; jmp rsp
+0x0000000000199af7 : add byte ptr [rcx + rdx - 9], al ; jmp rsp
+0x00000000001974df : add byte ptr [rcx + rdx*2 - 0x13], dh ; jmp rsp
+0x00000000000f4890 : add byte ptr [rcx - 0x80], al ; jmp qword ptr [rdi]
+0x00000000000f480f : add byte ptr [rcx - 0x80], al ; jmp qword ptr [rdx]
+0x000000000019ccd0 : add byte ptr [rcx - 3], dh ; jmp qword ptr [rdi]
+0x000000000011a3d0 : add byte ptr [rcx], al ; jmp 0x11a19b
+0x000000000011a790 : add byte ptr [rcx], al ; jmp 0x11a56b
+0x0000000000197faf : add byte ptr [rdi + rbx - 0x11], al ; jmp rsp
+0x000000000019a37f : add byte ptr [rdi + rcx - 8], ah ; jmp rsp
+0x000000000019b63f : add byte ptr [rdi + rdi*4 - 6], al ; jmp rsp
+0x0000000000175860 : add byte ptr [rdi - 0x15], ah ; jmp rax
+0x0000000000198fd7 : add byte ptr [rdx + rax*2 - 0xb], ah ; jmp rsp
+0x000000000019731f : add byte ptr [rdx + rbx*4], al ; jmp 0x197327
+0x0000000000199257 : add byte ptr [rdx + rcx - 0xa], al ; jmp rsp
+0x0000000000196a7f : add byte ptr [rdx + rdi*2 - 0x17], dh ; jmp rsp
+0x00000000001acdeb : add byte ptr [rdx + rdx - 0x25ffffff], dh ; jmp qword ptr [rcx]
+0x00000000001acdd3 : add byte ptr [rdx + rdx - 0x2617ffff], bl ; jmp qword ptr [rcx]
+0x00000000001acdbb : add byte ptr [rdx + rdx - 0x262fffff], al ; jmp qword ptr [rcx]
+0x0000000000198a6f : add byte ptr [rdx + rsi - 0xd], ah ; jmp rsp
+0x000000000019e010 : add byte ptr [rdx - 0x17], dh ; jmp qword ptr [rsi]
+0x00000000001989f7 : add byte ptr [rdx - 0xd], dl ; jmp rsp
+0x000000000019d9d3 : add byte ptr [rsi + rbx + 0x4a780000], bl ; jmp 0x1b9ce7
+0x0000000000197cef : add byte ptr [rsi + rbx*2 - 0x12], al ; jmp rsp
+0x000000000019b1ff : add byte ptr [rsi + rdi - 6], dh ; jmp rsp
+0x0000000000199657 : add byte ptr [rsi + rsi*2 - 0xa], ah ; jmp rsp
+0x00000000001a6830 : add byte ptr [rsi - 0x12], bh ; jmp qword ptr [rcx]
+0x000000000019a157 : add byte ptr [rsi - 9], al ; jmp rsp
+0x0000000000199007 : add byte ptr [rsp + rax*2 - 0xb], dh ; jmp rsp
+0x00000000001972f7 : add byte ptr [rsp + rax*2], ah ; jmp 0x1972ff
+0x0000000000195c78 : add byte ptr [rsp + rdi*8 - 0x37c6f01], al ; jmp qword ptr [rax]
+0x00000000001971af : add byte ptr [rsp + rdx], dl ; jmp 0x1971b7
+0x0000000000198a1f : add byte ptr [rsp], al ; jmp rsp
+0x000000000018a4fb : add dh, bh ; jmp rdi
+0x00000000000d7ca8 : add dh, byte ptr [rbp - 0x2b] ; jmp 0xd7c74
+0x0000000000188015 : add dh, dl ; jmp qword ptr [rax]
+0x000000000018802d : add dh, dl ; jmp rax
+0x00000000001acdf0 : add dl, bl ; jmp qword ptr [rcx]
+0x0000000000187fd9 : add dl, dh ; jmp rax
+0x00000000001a3c95 : add dword ptr [rax], 0xed46a800 ; jmp qword ptr [rsi]
+0x0000000000198a1e : add dword ptr [rax], eax ; add al, 0x24 ; jmp rsp
+0x0000000000084be0 : add dword ptr [rax], eax ; add byte ptr [rax - 0x7d], cl ; jmp qword ptr [rax]
+0x00000000001b0afe : add dword ptr [rax], eax ; add byte ptr [rax - 0xb], dh ; jmp qword ptr [rcx]
+0x000000000005981e : add dword ptr [rax], eax ; add byte ptr [rax], al ; add rax, rcx ; jmp rax
+0x000000000004da4c : add dword ptr [rax], eax ; add byte ptr [rax], al ; add rax, rsi ; jmp rax
+0x00000000000bf1e7 : add dword ptr [rax], eax ; add byte ptr [rax], al ; jmp 0xbf1b4
+0x00000000001acdee : add dword ptr [rax], eax ; add dl, bl ; jmp qword ptr [rcx]
+0x00000000000569f7 : add eax, 0xfffffd06 ; add rax, rdx ; jmp rax
+0x000000000010f939 : add eax, dword ptr [rax] ; add al, ch ; jmp rdx
+0x000000000010289c : add eax, dword ptr [rax] ; add byte ptr [rax], al ; jmp rax
+0x000000000008554a : add eax, ebp ; jmp rax
+0x0000000000059823 : add eax, ecx ; jmp rax
+0x00000000000c00b4 : add eax, edi ; jmp rax
+0x000000000002ec9a : add eax, edx ; jmp rax
+0x000000000002ebbc : add eax, esi ; jmp rax
+0x0000000000196de1 : add ebp, edx ; jmp rsp
+0x000000000018c5f1 : add ebx, edi ; jmp rax
+0x000000000002be48 : add ecx, eax ; jmp rcx
+0x0000000000150fbb : add ecx, ebx ; jmp r9
+0x0000000000047c96 : add ecx, ebx ; jmp rcx
+0x000000000003329c : add ecx, edi ; jmp rcx
+0x0000000000063e4a : add ecx, edx ; jmp rcx
+0x00000000000aac94 : add ecx, esi ; jmp rcx
+0x0000000000132dcd : add edi, 0x10 ; jmp rcx
+0x0000000000135874 : add edi, 0x58 ; jmp rcx
+0x0000000000134fd4 : add edi, 0x68 ; jmp rcx
+0x0000000000132257 : add edi, 0xc8 ; jmp rcx
+0x00000000001a73d1 : add edi, ebp ; jmp rsi
+0x00000000000e1a7d : add edi, ebx ; jmp rdi
+0x0000000000150fb8 : add edi, edx ; add r9, r11 ; jmp r9
+0x000000000006caa2 : add edi, esi ; jmp rdi
+0x000000000009e8cc : add edx, eax ; jmp r10
+0x00000000000210b8 : add edx, eax ; jmp rdx
+0x00000000000e1297 : add edx, ecx ; jmp rdx
+0x0000000000188009 : add edx, esi ; jmp rax
+0x00000000000c5265 : add edx, esi ; jmp rdx
+0x000000000004606b : add esi, eax ; jmp qword ptr [rax]
+0x000000000002e8f2 : add esi, eax ; jmp rsi
+0x0000000000033413 : add esi, edi ; jmp rsi
+0x0000000000150fb5 : add esi, edx ; add rdi, rdx ; add r9, r11 ; jmp r9
+0x0000000000020b8e : add esp, 0x28 ; jmp rax
+0x000000000008d85d : add esp, 8 ; jmp rax
+0x0000000000195475 : add esp, edi ; jmp qword ptr [rax]
+0x0000000000195495 : add esp, edi ; jmp rax
+0x00000000001b0afd : add qword ptr [r8], r8 ; add byte ptr [rax - 0xb], dh ; jmp qword ptr [rcx]
+0x000000000009e8cb : add r10, rax ; jmp r10
+0x0000000000150fba : add r9, r11 ; jmp r9
+0x0000000000085549 : add rax, r13 ; jmp rax
+0x000000000002ebbb : add rax, r14 ; jmp rax
+0x000000000009ea34 : add rax, r9 ; jmp rax
+0x0000000000059822 : add rax, rcx ; jmp rax
+0x00000000000c00b3 : add rax, rdi ; jmp rax
+0x000000000002ec99 : add rax, rdx ; jmp rax
+0x000000000004da50 : add rax, rsi ; jmp rax
+0x0000000000047c95 : add rcx, r11 ; jmp rcx
+0x000000000002be47 : add rcx, r8 ; jmp rcx
+0x0000000000063888 : add rcx, rax ; jmp rcx
+0x000000000003329b : add rcx, rdi ; jmp rcx
+0x0000000000063e49 : add rcx, rdx ; jmp rcx
+0x00000000000aac93 : add rcx, rsi ; jmp rcx
+0x0000000000132dcc : add rdi, 0x10 ; jmp rcx
+0x0000000000135873 : add rdi, 0x58 ; jmp rcx
+0x0000000000134fd3 : add rdi, 0x68 ; jmp rcx
+0x0000000000132256 : add rdi, 0xc8 ; jmp rcx
+0x00000000000e1a7c : add rdi, r11 ; jmp rdi
+0x0000000000150fb7 : add rdi, rdx ; add r9, r11 ; jmp r9
+0x000000000006caa1 : add rdi, rsi ; jmp rdi
+0x00000000000c325c : add rdx, r8 ; jmp rdx
+0x00000000000210b7 : add rdx, rax ; jmp rdx
+0x00000000000e1296 : add rdx, rcx ; jmp rdx
+0x00000000000c5264 : add rdx, rsi ; jmp rdx
+0x000000000002e8f1 : add rsi, rax ; jmp rsi
+0x0000000000033412 : add rsi, rdi ; jmp rsi
+0x0000000000020b8d : add rsp, 0x28 ; jmp rax
+0x000000000008d85c : add rsp, 8 ; jmp rax
+0x0000000000101e62 : jmp 0x101e28
+0x0000000000106e42 : jmp 0x10631c
+0x00000000001087aa : jmp 0x1087db
+0x000000000010c904 : jmp 0x10c651
+0x000000000010c934 : jmp 0x10c86c
+0x000000000010e037 : jmp 0x10df5e
+0x000000000010e750 : jmp 0x10e716
+0x0000000000112853 : jmp 0x11264f
+0x0000000000112b99 : jmp 0x112b5f
+0x00000000001186a1 : jmp 0x118666
+0x000000000011a3d2 : jmp 0x11a199
+0x000000000011a792 : jmp 0x11a569
+0x0000000000126a7c : jmp 0x126a41
+0x00000000001322bf : jmp 0x132285
+0x0000000000136a21 : jmp 0x1369f1
+0x000000000013856e : jmp 0x138578
+0x0000000000142590 : jmp 0x14227c
+0x0000000000175862 : jmp 0x175864
+0x0000000000175861 : jmp 0x175865
+0x0000000000175866 : jmp 0x175868
+0x0000000000175865 : jmp 0x175869
+0x0000000000181e46 : jmp 0x181e48
+0x0000000000181e4e : jmp 0x181e50
+0x0000000000181e52 : jmp 0x181e5c
+0x000000000018348a : jmp 0x1834c9
+0x00000000001841c9 : jmp 0x18419c
+0x00000000001851c0 : jmp 0x185154
+0x00000000001851bf : jmp 0x185155
+0x00000000001971b2 : jmp 0x1971b4
+0x00000000001972aa : jmp 0x1972ac
+0x00000000001972fa : jmp 0x1972fc
+0x00000000001972f9 : jmp 0x1972fd
+0x0000000000197322 : jmp 0x197324
+0x00000000001a06c2 : jmp 0x1a06c4
+0x00000000001a06c1 : jmp 0x1a06c5
+0x00000000001a06c0 : jmp 0x1a06c6
+0x00000000001a0712 : jmp 0x1a0714
+0x00000000001a0a62 : jmp 0x1a0a64
+0x00000000001a0b1a : jmp 0x1a0b1c
+0x00000000001a0b9a : jmp 0x1a0b9c
+0x000000000019d9da : jmp 0x1b9ce0
+0x000000000019d9d9 : jmp 0x1b9ce1
+0x000000000001fb07 : jmp 0x1facd
+0x0000000000020496 : jmp 0x2045b
+0x0000000000026a1b : jmp 0x2682e
+0x000000000002a8f1 : jmp 0x2a85f
+0x0000000000037b81 : jmp 0x37b8b
+0x00000000000038b3 : jmp 0x3879
+0x000000000003af85 : jmp 0x39c63093
+0x000000000009a60f : jmp 0x440b6899
+0x0000000000048392 : jmp 0x483e4
+0x00000000000e8270 : jmp 0x48d10bc0
+0x0000000000133bd2 : jmp 0x48d2fe62
+0x00000000000701a2 : jmp 0x48f58af5
+0x0000000000049f72 : jmp 0x49fc4
+0x000000000004f267 : jmp 0x4f243
+0x000000000015af6a : jmp 0x4f94bf68
+0x000000000015af69 : jmp 0x4f94bf69
+0x000000000015da3a : jmp 0x4f94ea38
+0x000000000015da39 : jmp 0x4f94ea39
+0x000000000016055a : jmp 0x4f951558
+0x0000000000160559 : jmp 0x4f951559
+0x000000000005f811 : jmp 0x5baf2
+0x000000000005c46c : jmp 0x5c431
+0x0000000000060852 : jmp 0x5ca99
+0x000000000005fb8a : jmp 0x5fb4f
+0x000000000006045e : jmp 0x60423
+0x0000000000062809 : jmp 0x627ce
+0x0000000000067498 : jmp 0x636fe
+0x0000000000065b8b : jmp 0x63702
+0x0000000000068daa : jmp 0x64b91
+0x0000000000065aca : jmp 0x64bf7
+0x0000000000065ac9 : jmp 0x64bf8
+0x000000000006597b : jmp 0x653d3
+0x0000000000069613 : jmp 0x6585f
+0x0000000000069f5b : jmp 0x661e6
+0x0000000000072feb : jmp 0x72fb1
+0x0000000000072fea : jmp 0x72fb2
+0x0000000000117714 : jmp 0x76d3b064
+0x00000000001178c7 : jmp 0x76d3b217
+0x000000000007b5de : jmp 0x7b5c0
+0x000000000007ef54 : jmp 0x7ef7e
+0x0000000000081b09 : jmp 0x81461
+0x0000000000081a8f : jmp 0x8196c
+0x0000000000196912 : jmp 0x83361f
+0x0000000000083b65 : jmp 0x83b8e
+0x00000000000842aa : jmp 0x841f7
+0x000000000019693a : jmp 0x843647
+0x000000000019697a : jmp 0x853687
+0x0000000000086ae1 : jmp 0x86aa9
+0x00000000000886e2 : jmp 0x886a8
+0x000000000008885a : jmp 0x8881f
+0x0000000000196aaa : jmp 0x88ffb7
+0x0000000000089b54 : jmp 0x89b1a
+0x0000000000089ca8 : jmp 0x89c6d
+0x000000000009614b : jmp 0x95fa1
+0x00000000000967fc : jmp 0x967c2
+0x0000000000096948 : jmp 0x9690d
+0x0000000000096af2 : jmp 0x96ab7
+0x0000000000196d42 : jmp 0x970a4f
+0x000000000009a944 : jmp 0x9a94e
+0x000000000009ae20 : jmp 0x9ae2a
+0x000000000009d9c2 : jmp 0x9d36a
+0x000000000009e3fc : jmp 0x9d3f2
+0x000000000009d4e1 : jmp 0x9d40f
+0x000000000009e3fd : jmp 0x9e3f3
+0x00000000000aa32e : jmp 0xaa2f4
+0x00000000000aa3ff : jmp 0xaa3c5
+0x00000000000aa46e : jmp 0xaa434
+0x00000000000adfd4 : jmp 0xaddb7
+0x00000000000ae3e3 : jmp 0xae217
+0x00000000000b7814 : jmp 0xb7861
+0x00000000000bf715 : jmp 0xbb943
+0x00000000000bf1eb : jmp 0xbf1b0
+0x00000000000c012c : jmp 0xbff1d
+0x00000000000c254e : jmp 0xc23a0
+0x00000000000c84c0 : jmp 0xc8486
+0x00000000000ca7b7 : jmp 0xca686
+0x00000000000cd215 : jmp 0xcf9db
+0x00000000000d51d1 : jmp 0xd51cb
+0x00000000000d7cab : jmp 0xd7c71
+0x00000000001079b4 : jmp 0xf1079bd
+0x00000000000467dd : jmp 0xfc6fef4
+0x00000000000ff661 : jmp 0xff668
+0x000000000013777a : jmp 0xffffffff80d66e92
+0x0000000000137a01 : jmp 0xffffffff80d67119
+0x0000000000003186 : jmp 0xffffffff88c2d331
+0x00000000000be4d8 : jmp 0xffffffffbece6e28
+0x000000000012aa22 : jmp 0xffffffffc0987e2d
+0x00000000000da622 : jmp 0xffffffffc296e733
+0x0000000000139966 : jmp 0xffffffffc29d996b
+0x00000000000abb73 : jmp 0xffffffffc30abb7c
+0x0000000000048a91 : jmp 0xffffffffc31413e6
+0x0000000000099d43 : jmp 0xffffffffc332e64d
+0x000000000004b513 : jmp 0xffffffffe804c96f
+0x00000000000ad66b : jmp 0xfffffffffffa5fbc
+0x00000000000fe5bb : jmp qword ptr [r8]
+0x0000000000195b53 : jmp qword ptr [rax + 0x20fffc58]
+0x00000000001968e3 : jmp qword ptr [rax + rbp*2 + 0x5cf40000]
+0x0000000000188cd3 : jmp qword ptr [rax + rbp*4 - 0xd]
+0x0000000000187dff : jmp qword ptr [rax - 0x2f000e15]
+0x0000000000189fdb : jmp qword ptr [rax - 0x3f000a7f]
+0x0000000000187de7 : jmp qword ptr [rax - 0x3f000e16]
+0x0000000000187dc7 : jmp qword ptr [rax - 0x3f000e17]
+0x0000000000187da7 : jmp qword ptr [rax - 0x3f000e18]
+0x000000000004606e : jmp qword ptr [rax]
+0x000000000019a11b : jmp qword ptr [rbx + rax*8]
+0x000000000005ec58 : jmp qword ptr [rbx + rcx*4 + 1]
+0x0000000000002563 : jmp qword ptr [rbx]
+0x0000000000181dcb : jmp qword ptr [rcx]
+0x000000000019b65b : jmp qword ptr [rdi + rdx*2 - 0x3cebfffe]
+0x00000000000f4893 : jmp qword ptr [rdi]
+0x0000000000196443 : jmp qword ptr [rdx + 0x12fffc9e]
+0x0000000000195f13 : jmp qword ptr [rdx + 0x22fffc7e]
+0x000000000019581f : jmp qword ptr [rdx + 0x32fffc60]
+0x000000000019a0db : jmp qword ptr [rdx + rax*8 + 1]
+0x000000000006ab58 : jmp qword ptr [rdx]
+0x0000000000039f01 : jmp qword ptr [rsi + 0xf]
+0x000000000019a063 : jmp qword ptr [rsi + rdi*4 + 1]
+0x00000000000dc6ad : jmp qword ptr [rsi - 0x70]
+0x0000000000189583 : jmp qword ptr [rsi]
+0x000000000019a45b : jmp qword ptr [rsp + rdx*8 + 1]
+0x0000000000001b62 : jmp r10
+0x0000000000150fbd : jmp r9
+0x00000000000c00b6 : jmp rax
+0x0000000000189267 : jmp rbx
+0x000000000002be4a : jmp rcx
+0x000000000006caa4 : jmp rdi
+0x0000000000001b63 : jmp rdx
+0x000000000002e8f4 : jmp rsi
+0x0000000000002a71 : jmp rsp
+
+Unique gadgets found: 391

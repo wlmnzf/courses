@@ -1,0 +1,62 @@
+/*
+ * CFI-LEN for qemu homework
+ *
+ *  Copyright (c) 2018 CAS Lab
+ *
+ * Have fun!
+ */
+
+基于配件长度的粗粒度CFI:
+-说明：基于qemu的粗粒度CFI实现方式有很多种，我们只是利用其中一种情形实现。
+	  -你如果有其他的实现想法，不局限为一种，欢迎交流、实现、讨论。
+	  
+-原理：本粗粒度CFI的实现原理是通过标记TB块中是否含有call、jmp及ret指令来实现。
+	  -我们认为当两个跳转指令之间的指令条数小于x时，我们称这个指令片段为一个配件
+	  -当连续出现y个这样的配件时，我们认为程序受到了攻击。
+	  -我们在TB块翻译(tb_find_fast)执行过程中审查指令片段是否为配件，
+	  -之后，检查是否连续出现多个这样的配件，并输出配件链信息。
+	  
+-TB块说明：在qemu/include/exec/exec-all.h文件中增加定义TB块结构体	
+	  -我们在此结构体中添加了7个变量
+	   |---------	   
+	   + int JmpFlagM; //标识此TB块是否有jmp指令
+	   + target_ulong jmp_addr; //记录jmp指令地址
+
+       + int CallFlagM; //标识此TB块是否有call指令
+       + target_ulong call_addr; //记录call指令地址
+       + target_ulong callnext_addr;//记录返回地址
+
+       + int RetFlagM; //标识此TB块是否有ret指令
+       + target_ulong ret_addr;//记录ret指令地址
+	   |---------
+
+(漏洞攻击程序以本文件提供的说明为准)	   
+-步骤：
+	1.打补丁
+	   - cp *.patch qemu-2.7.0/
+	   - cd qemu-2.7.0
+	   - ./do_patch.sh 
+	   
+	2.实现逻辑
+	
+	3.测试
+	   - qemu-x86_64 -enable-coarse-CFI cfi-len-test
+	   
+	4.验证攻击
+	   - 按照预备部分配置、编译、安装
+	   - cd rop_stack_overflow_gen/
+	   - qemu-x86_64 -enable-coarse-CFI vul
+	   - 开启另外一个终端
+	   - cd exploit/
+	   - python rop_stack_overflow.py
+	   
+	4.提交
+	  - diff -up 修改前文件  修改后文件 > 文件名_modify.patch
+	  
+	5.输出要求 
+	  -//配件末端跳转指令类型   跳转目的地址    配件序号     配件包含指令数(长度)     
+	  - type(jmp/ret/call):        addr:        number:       length：
+	输出格式例子：
+		type:jmp    addr:400568    number:2    length:4
+		
+注意：不考虑库中的跳转地址！！		

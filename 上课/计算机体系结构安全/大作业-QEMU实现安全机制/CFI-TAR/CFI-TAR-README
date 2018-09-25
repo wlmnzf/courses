@@ -1,0 +1,69 @@
+/*
+ * CFI-TAR for qemu homework
+ *
+ *  Copyright (c) 2018 CAS Lab
+ *
+ * Have fun!
+ */
+
+基于跳转指令目标的粗粒度CFI:
+-说明：基于qemu的粗粒度CFI实现方式有很多种，我们只是利用其中一种情形实现。
+	  -你如果有其他的实现想法，不局限为一种，欢迎交流、实现、讨论。
+	  
+-原理：本粗粒度CFI的实现原理是通过标记TB块中是否含有call、jmp及ret指令来实现。
+	  -我们在TB块翻译(tb_find_fast)执行后，检查jmp/call/ret的跳转地址是否和
+	  -静态分析生成的CFG中的程序跳转地址一致，若一致则认为程序正常执行，
+	  -若不一致则认为程序受到攻击。
+	  
+-TB块说明：在qemu/include/exec/exec-all.h文件中增加定义TB块结构体	
+	  -我们在此结构体中添加了7个变量
+	   |---------	   
+	   + int JmpFlagM; //标识此TB块是否有jmp指令
+	   + target_ulong jmp_addr; //记录jmp指令地址
+
+       + int CallFlagM; //标识此TB块是否有call指令
+       + target_ulong call_addr; //记录call指令地址
+       + target_ulong callnext_addr;//记录返回地址
+
+       + int RetFlagM; //标识此TB块是否有ret指令
+       + target_ulong ret_addr;//记录ret指令地址
+	   |---------
+	   
+-CFG文件说明：
+   ++ vul.call
+	  call指令地址   与call紧邻下一条指令地址
+	     |                     |
+	  - 4005d8	            4005dd
+	  
+   ++ vul.func
+	  函数头地址        函数长度
+	     |                  |
+	  - 4005c8	            26
+
+(漏洞攻击程序以本文件提供的说明为准)	   
+-步骤：
+	1.打补丁
+	   - cp *.patch qemu-2.7.0/
+	   - cd qemu-2.7.0
+	   - ./do_patch.sh 
+	   
+	2.实现逻辑
+	   
+	3.验证攻击
+	   - 按照预备部分配置、编译、安装
+	   - cd rop_stack_overflow_gen/
+	   - qemu-x86_64 -enable-coarse-CFI vul
+	   - 开启另外一个终端
+	   - cd exploit/
+	   - python rop_stack_overflow.py
+	   
+	4.提交
+	  - diff -up 修改前文件  修改后文件 > 文件名_modify.patch
+	  
+	5.输出要求 
+	  - //被篡改的指令类型    地址     控制流图中正确的地址
+	  - type:                 addr:     cfi-addr:
+	输出格式例子：
+		type:jmp    addr:400568    cfi-addr:4007e9
+		
+注意：不考虑库中的跳转地址！！	

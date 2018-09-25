@@ -1,0 +1,1 @@
+cmd_/home/william/youho_ctl/proc_create/jif.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/william/youho_ctl/proc_create/jif.ko /home/william/youho_ctl/proc_create/jif.o /home/william/youho_ctl/proc_create/jif.mod.o ;  true

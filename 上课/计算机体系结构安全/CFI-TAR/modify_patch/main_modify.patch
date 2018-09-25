@@ -1,0 +1,157 @@
+--- origin/main.c	2018-05-07 11:44:37.956713000 +0800
++++ qemu-2.7.0/linux-user/main.c	2018-05-15 09:21:11.000000000 +0800
+@@ -37,6 +37,10 @@
+ #include "trace/control.h"
+ #include "glib-compat.h"
+ 
++#include <malloc.h>
++
++
++
+ char *exec_path;
+ 
+ int singlestep;
+@@ -51,6 +55,143 @@
+ 
+ /* QEMU-HOMEWORK CFI-target, command line options */
+ int coarsecfi_enabled;
++struct cfg_call cfg_calls[100];
++struct cfg_function cfg_functions[100];
++int cfg_call_cnt;
++int cfg_function_cnt;
++STACK stack; 
++
++void initStack(PSTACK pStack);  
++void pushStack(PSTACK pStack,target_ulong call_addr,target_ulong callnext_addr); 
++bool findAndDelete(PSTACK pStack,target_ulong * call_addr,target_ulong * callnext_addr,target_ulong eip);
++bool popStack(PSTACK pStack,target_ulong * call_addr,target_ulong * callnext_addr);
++bool isEmpty(PSTACK pStack); 
++void clearStack(PSTACK pStack); 
++
++void initStack(PSTACK pStack)
++{
++     pStack->pTop = (PNODE)malloc(sizeof(NODE));
++     if(NULL != pStack->pTop)
++     {
++         pStack->pBottom = pStack->pTop;
++         pStack->pTop->pNext = NULL;
++     }
++     else 
++     {
++         printf("内存分配失败!程序退出!\n");
++         exit(-1);
++     }
++ return;
++}
++ 
++void pushStack(PSTACK pStack,target_ulong call_addr,target_ulong callnext_addr)
++{
++ PNODE pNew = (PNODE)malloc(sizeof(NODE));
++ pNew->call_addr = call_addr;
++ pNew->callnext_addr=callnext_addr;
++ pNew->pNext = pStack->pTop;  
++ pStack->pTop = pNew;
++ return;
++}
++ 
++bool popStack(PSTACK pStack,target_ulong * call_addr,target_ulong * callnext_addr)
++{
++ if(isEmpty(pStack))
++ {
++    return false;
++ }
++ else
++ {
++     PNODE rNode = pStack->pTop;
++     *call_addr = rNode->call_addr;
++     *callnext_addr=rNode->callnext_addr;
++     pStack->pTop = rNode->pNext;
++     free(rNode);
++     rNode = NULL;
++     return true;
++ }
++}
++
++bool getTop(PSTACK pStack,target_ulong * call_addr,target_ulong * callnext_addr)
++ {
++     if(isEmpty(pStack))
++     {
++        return false;
++     }
++     else
++     {
++         PNODE rNode = pStack->pTop;
++         *call_addr = rNode->call_addr;
++         *callnext_addr=rNode->callnext_addr;
++         return true;
++     }
++ }
++
++ bool findAndDelete(PSTACK pStack,target_ulong * call_addr,target_ulong * callnext_addr,target_ulong eip)
++ {
++     if(isEmpty(pStack))
++     {
++        return false;
++     }
++     
++    PNODE pNode = pStack->pTop;
++    PNODE pNode_pre= pStack->pTop;
++    while (pStack->pBottom != pNode)
++    {
++        if(pNode->callnext_addr==eip)
++        {
++            if(pNode==pStack->pTop)
++            {
++                popStack(pStack,call_addr,callnext_addr);
++                return true;
++            }
++            pNode_pre->pNext=pNode->pNext;
++            *call_addr = pNode->call_addr;
++            *callnext_addr=pNode->callnext_addr;
++            free(pNode);
++            return true;
++        }
++        pNode_pre=pNode;
++        pNode = pNode->pNext;
++    }
++    return false;
++ }
++
++ 
++bool isEmpty(PSTACK pStack)
++{
++     if(pStack->pTop == pStack->pBottom)
++        return true;
++     else
++        return false;
++}
++ 
++void clearStack(PSTACK pStack)
++{ 
++ if(isEmpty(pStack))
++ {
++    return;
++ }
++ else
++ { 
++     PNODE p = pStack->pTop;
++     PNODE q = NULL;
++     while(p != pStack->pBottom)
++     {
++          q = p->pNext;
++          free(p);
++          p = q;
++     }
++         pStack->pTop = pStack->pBottom;
++         return;
++     }
++}
++
++
++
++
++
++
+ 
+ #define EXCP_DUMP(env, fmt, ...)                                        \
+ do {                                                                    \

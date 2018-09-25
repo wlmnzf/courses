@@ -1,0 +1,112 @@
+--- qemu-2.7.0/target-i386/translate.c	2016-09-02 11:34:23.000000000 -0400
++++ homesrc/translate.c	2018-04-10 23:29:16.240535927 -0400
+@@ -104,6 +104,11 @@ typedef struct DisasContext {
+     target_ulong pc; /* pc = eip + cs_base */
+     int is_jmp; /* 1 = means jump (stop translation), 2 means CPU
+                    static state change (stop translation) */
++    /* QEMU-HOMEWORK CFI-target */
++    int have_jmp;/* MONITOR JMP module, 1 = means have jmp instruction,vice versa */
++    int have_call;/* MONITOR CALL module, 1 = means have call instruction,vice versa */
++    int have_ret;/* MONITOR RET module, 1 = means have ret instruction,vice versa */
++
+     /* current block context */
+     target_ulong cs_base; /* base of CS segment */
+     int pe;     /* protected mode */
+@@ -4858,6 +4863,11 @@ static target_ulong disas_insn(CPUX86Sta
+             gen_inc(s, ot, opreg, -1);
+             break;
+         case 2: /* call Ev */
++            /* QEMU-HOMEWORK CFI-target, MONITOR CALL module */
++            if(coarsecfi_enabled){
++		s->have_call = 1;
++            }
++
+             /* XXX: optimize if memory (no 'and' is necessary) */
+             if (dflag == MO_16) {
+                 tcg_gen_ext16u_tl(cpu_T0, cpu_T0);
+@@ -4888,6 +4898,10 @@ static target_ulong disas_insn(CPUX86Sta
+             gen_eob(s);
+             break;
+         case 4: /* jmp Ev */
++            /* QEMU-HOMEWORK CFI-target, MONITOR JMP module ***/
++            if(coarsecfi_enabled){
++	        s->have_jmp = 1;
++	    }
+             if (dflag == MO_16) {
+                 tcg_gen_ext16u_tl(cpu_T0, cpu_T0);
+             }
+@@ -6266,6 +6280,10 @@ static target_ulong disas_insn(CPUX86Sta
+         /************************/
+         /* control */
+     case 0xc2: /* ret im */
++    	/* QEMU-HOMEWORK CFI-target, MONITOR RET module */
++    	if(coarsecfi_enabled){
++    		s->have_ret = 1;
++    	}
+         val = cpu_ldsw_code(env, s->pc);
+         s->pc += 2;
+         ot = gen_pop_T0(s);
+@@ -6276,6 +6294,10 @@ static target_ulong disas_insn(CPUX86Sta
+         gen_eob(s);
+         break;
+     case 0xc3: /* ret */
++    	/* QEMU-HOMEWORK CFI-target, MONITOR RET module */
++    	if(coarsecfi_enabled){
++    		s->have_ret = 1;
++    	}
+         ot = gen_pop_T0(s);
+         gen_pop_update(s, ot);
+         /* Note that gen_pop_T0 uses a zero-extending load.  */
+@@ -8202,11 +8224,27 @@ void gen_intermediate_code(CPUX86State *
+     int num_insns;
+     int max_insns;
+ 
++    /* QEMU-HOMEWORK CFI-target, MONITOR JMP module */
++    tb->JmpFlagM = 0;
++    tb->jmp_addr = 0;
++    /* QEMU-HOMEWORK CFI-target, MONITOR CALL module */
++    tb->CallFlagM = 0;
++    tb->call_addr = 0;
++    tb->callnext_addr = 0;
++    /* QEMU-HOMEWORK CFI-target, MONITOR RET module */
++    tb->RetFlagM = 0;
++    tb->ret_addr = 0;
++
+     /* generate intermediate code */
+     pc_start = tb->pc;
+     cs_base = tb->cs_base;
+     flags = tb->flags;
+ 
++    /* QEMU-HOMEWORK CFI-target, is have jmp/call/ret judgment of disassemble tb ? */
++    dc->have_jmp = 0; 
++    dc->have_call = 0; 
++    dc->have_ret = 0; 
++
+     dc->pe = (flags >> HF_PE_SHIFT) & 1;
+     dc->code32 = (flags >> HF_CS32_SHIFT) & 1;
+     dc->ss32 = (flags >> HF_SS32_SHIFT) & 1;
+@@ -8303,6 +8341,24 @@ void gen_intermediate_code(CPUX86State *
+         }
+ 
+         pc_ptr = disas_insn(env, dc, pc_ptr);
++
++        /* QEMU-HOMEWORK CFI-target, MONITOR RET module */
++        if(coarsecfi_enabled && dc->have_ret){
++        	tb->RetFlagM = dc->have_ret;//mark tb,if TB have ret.
++        	tb->ret_addr = dc->pc_start;
++        }
++        /* QEMU-HOMEWORK CFI-target, MONITOR CALL module */
++        if(coarsecfi_enabled && dc->have_call){
++        	tb->CallFlagM = dc->have_call;
++        	tb->call_addr = dc->pc_start;
++        	tb->callnext_addr = pc_ptr;
++        }
++        /* QEMU-HOMEWORK CFI-target, MONITOR JMP module */
++        if(coarsecfi_enabled && dc->have_jmp){
++        	tb->JmpFlagM = dc->have_jmp;
++        	tb->jmp_addr = dc->pc_start;
++    	}
++
+         /* stop translation if indicated */
+         if (dc->is_jmp)
+             break;

@@ -1,0 +1,37 @@
+--- qemu-2.7.0/include/exec/exec-all.h	2016-09-02 23:34:20.000000000 +0800
++++ exec-all.h	2018-05-20 23:00:21.682907000 +0800
+@@ -262,6 +262,20 @@
+      */
+     uintptr_t jmp_list_next[2];
+     uintptr_t jmp_list_first;
++
++    /* QEMU-HOMEWORK CFI-target, MONITOR JMP module */
++    int JmpFlagM;
++    target_ulong jmp_addr;
++
++    /* QEMU-HOMEWORK CFI-target, MONITOR CALL module */
++    int CallFlagM;
++    target_ulong call_addr;
++    target_ulong callnext_addr;
++
++    /* QEMU-HOMEWORK CFI-target, MONITOR RET module */
++    int RetFlagM;
++    target_ulong ret_addr;
++
+ };
+ 
+ void tb_free(TranslationBlock *tb);
+@@ -415,6 +429,13 @@
+ /* vl.c */
+ extern int singlestep;
+ 
++/* QEMU-HOMEWORK CFI-target */
++extern int coarsecfi_enabled;
++extern int vul_call[29][2];
++extern int vul_func[34][2];
++extern int call_ret_addr[50][2];
++
++
+ /* cpu-exec.c, accessed with atomic_mb_read/atomic_mb_set */
+ extern CPUState *tcg_current_cpu;
+ extern bool exit_request;

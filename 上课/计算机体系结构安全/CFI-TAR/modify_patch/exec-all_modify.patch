@@ -1,0 +1,64 @@
+--- origin/exec-all.h	2018-05-07 11:44:37.992714000 +0800
++++ qemu-2.7.0/include/exec/exec-all.h	2018-05-15 09:33:40.896000000 +0800
+@@ -271,6 +271,11 @@
+     int CallFlagM;
+     target_ulong call_addr;
+     target_ulong callnext_addr;
++    // target_ulong  cur_instruction;
++    // target_ulong  ot;
++    // target_ulong mod;
++    // target_ulong rm;
++    // target_ulong op;
+ 
+     /* QEMU-HOMEWORK CFI-target, MONITOR RET module */
+     int RetFlagM;
+@@ -278,6 +283,31 @@
+ 
+ };
+ 
++struct cfg_call
++{
++   target_ulong call_addr;
++   target_ulong callnext_addr;
++};
++
++struct cfg_function
++{
++   target_ulong start_addr;
++   int length;
++};
++
++typedef struct Node
++{
++  target_ulong call_addr;
++  target_ulong callnext_addr;
++  struct Node * pNext; 
++} NODE, * PNODE;  
++
++typedef struct Stack
++{
++ PNODE pTop;  
++ PNODE pBottom;  
++} STACK, * PSTACK;  
++
+ void tb_free(TranslationBlock *tb);
+ void tb_flush(CPUState *cpu);
+ void tb_phys_invalidate(TranslationBlock *tb, tb_page_addr_t page_addr);
+@@ -431,6 +461,17 @@
+ 
+ /* QEMU-HOMEWORK CFI-target */
+ extern int coarsecfi_enabled;
++extern struct cfg_call cfg_calls[100];
++extern struct cfg_function cfg_functions[100];
++extern int cfg_call_cnt;
++extern int cfg_function_cnt;
++extern void initStack(PSTACK pStack);  
++extern void pushStack(PSTACK pStack,target_ulong call_addr,target_ulong callnext_addr); 
++extern bool popStack(PSTACK pStack,target_ulong * call_addr,target_ulong * callnext_addr);
++extern void traverseStack(PSTACK pStack); 
++extern bool isEmpty(PSTACK pStack); 
++extern void clearStack(PSTACK pStack); 
++extern STACK stack; 
+ 
+ /* cpu-exec.c, accessed with atomic_mb_read/atomic_mb_set */
+ extern CPUState *tcg_current_cpu;

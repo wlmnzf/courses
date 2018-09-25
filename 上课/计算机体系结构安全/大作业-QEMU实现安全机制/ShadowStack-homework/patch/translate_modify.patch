@@ -1,0 +1,142 @@
+--- qemu-2.7.0/target-i386/translate.c	2016-09-02 11:34:23.000000000 -0400
++++ qemu-2.7-homework/target-i386/translate.c	2018-04-09 22:20:46.987684338 -0400
+@@ -104,6 +104,12 @@ typedef struct DisasContext {
+     target_ulong pc; /* pc = eip + cs_base */
+     int is_jmp; /* 1 = means jump (stop translation), 2 means CPU
+                    static state change (stop translation) */
++
++    int have_stackcall;/* QEMU-HOMEWORK -ss command options, SHADOW STACK module
++     	 	 	   1 = means have call instruction,vice versa */
++    int have_stackret;/* QEMU-HOMEWORK -ss command options, SHADOW STACK module
++         	 	 	   1 = means have ret instruction,vice versa */
++
+     /* current block context */
+     target_ulong cs_base; /* base of CS segment */
+     int pe;     /* protected mode */
+@@ -4863,7 +4869,22 @@ static target_ulong disas_insn(CPUX86Sta
+                 tcg_gen_ext16u_tl(cpu_T0, cpu_T0);
+             }
+             next_eip = s->pc - s->cs_base;
+-            tcg_gen_movi_tl(cpu_T1, next_eip);
++
++           /* QEMU-HOMEWORK -ss command options, SHADOW STACK module 
++	    * write '0' into the orignal stack */
++            if(cas_shadowstack){
++            	s->have_stackcall = 1;
++	    /************************************
++	     *
++	     *               TODO...	
++	     *	
++	     ************************************/
++		assert(next_eip==0);
++            	tcg_gen_movi_tl(cpu_T1, next_eip);
++            }
++            else
++            	tcg_gen_movi_tl(cpu_T1, next_eip);
++
+             gen_push_v(s, cpu_T1);
+             gen_op_jmp_v(cpu_T0);
+             gen_bnd_jmp(s);
+@@ -6266,6 +6287,11 @@ static target_ulong disas_insn(CPUX86Sta
+         /************************/
+         /* control */
+     case 0xc2: /* ret im */
++    	/* QEMU-HOMEWORK -ss command options, SHADOW STACK module 
++	 * mark ret instruction for basic block 'tb'*/
++    	if(cas_shadowstack){
++    		s->have_stackret = 1;
++    	}
+         val = cpu_ldsw_code(env, s->pc);
+         s->pc += 2;
+         ot = gen_pop_T0(s);
+@@ -6276,6 +6302,11 @@ static target_ulong disas_insn(CPUX86Sta
+         gen_eob(s);
+         break;
+     case 0xc3: /* ret */
++    	/* QEMU-HOMEWORK -ss command options, SHADOW STACK module  */
++    	if(cas_shadowstack){
++    		s->have_stackret = 1;
++    	}
++
+         ot = gen_pop_T0(s);
+         gen_pop_update(s, ot);
+         /* Note that gen_pop_T0 uses a zero-extending load.  */
+@@ -6345,7 +6376,20 @@ static target_ulong disas_insn(CPUX86Sta
+             } else if (!CODE64(s)) {
+                 tval &= 0xffffffff;
+             }
+-            tcg_gen_movi_tl(cpu_T0, next_eip);
++            /* QEMU-HOMEWORK -ss command options, SHADOW STACK module
++	     * write '0' into the orignal stack */
++            if(cas_shadowstack){
++            	s->have_stackcall = 1;
++	    /************************************
++	     *
++	     *               TODO...	
++	     *	
++	     ************************************/
++		assert(next_eip==0);
++            	tcg_gen_movi_tl(cpu_T0, next_eip);
++            }
++            else
++            	tcg_gen_movi_tl(cpu_T0, next_eip);
+             gen_push_v(s, cpu_T0);
+             gen_bnd_jmp(s);
+             gen_jmp(s, tval);
+@@ -8189,6 +8233,19 @@ void tcg_x86_init(void)
+     helper_lock_init();
+ }
+ 
++/* mark call/ret flag for basic block 'tb'.  */
++static inline void grin_tcg_handle_stack(target_ulong pc_ptr,DisasContext *s,TranslationBlock *tb)
++{
++    if(s->have_stackcall)
++    {
++    	tb->CALLFlag = 1;
++    	tb->next_insn = pc_ptr;
++    }
++    if(s->have_stackret){
++    	tb->RETFlag = 1;
++    }
++}
++
+ /* generate intermediate code for basic block 'tb'.  */
+ void gen_intermediate_code(CPUX86State *env, TranslationBlock *tb)
+ {
+@@ -8202,11 +8259,22 @@ void gen_intermediate_code(CPUX86State *
+     int num_insns;
+     int max_insns;
+ 
++
++    /* QEMU-HOMEWORK -ss command options, SHADOW STACK module */
++    tb->CALLFlag = 0;
++    tb->next_insn = 0;
++    tb->RETFlag = 0;
++
++
+     /* generate intermediate code */
+     pc_start = tb->pc;
+     cs_base = tb->cs_base;
+     flags = tb->flags;
+ 
++    /* QEMU-HOMEWORK -ss command options, SHADOW STACK module */
++    dc->have_stackcall = 0;
++    dc->have_stackret = 0;
++
+     dc->pe = (flags >> HF_PE_SHIFT) & 1;
+     dc->code32 = (flags >> HF_CS32_SHIFT) & 1;
+     dc->ss32 = (flags >> HF_SS32_SHIFT) & 1;
+@@ -8303,6 +8371,13 @@ void gen_intermediate_code(CPUX86State *
+         }
+ 
+         pc_ptr = disas_insn(env, dc, pc_ptr);
++
++	/* QEMU-HOMEWORK -ss command options, SHADOW STACK module 
++	*  handle call/ret flag for basic block 'tb' */
++        if(cas_shadowstack){
++	    grin_tcg_handle_stack(pc_ptr,dc,tb);
++        }
++
+         /* stop translation if indicated */
+         if (dc->is_jmp)
+             break;

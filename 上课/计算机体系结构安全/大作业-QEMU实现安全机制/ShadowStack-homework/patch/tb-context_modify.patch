@@ -1,0 +1,12 @@
+--- qemu-2.7.0/include/exec/tb-context.h	2016-09-02 11:34:20.000000000 -0400
++++ qemu-2.7-homework/include/exec/tb-context.h	2018-04-09 07:59:45.041811524 -0400
+@@ -26,6 +26,9 @@
+ #define CODE_GEN_HTABLE_BITS     15
+ #define CODE_GEN_HTABLE_SIZE     (1 << CODE_GEN_HTABLE_BITS)
+ 
++/* QEMU-HOMEWORK -ss command options, SHADOW STACK module */
++typedef struct shadow_stack ShadowStack;
++
+ typedef struct TranslationBlock TranslationBlock;
+ typedef struct TBContext TBContext;
+ 

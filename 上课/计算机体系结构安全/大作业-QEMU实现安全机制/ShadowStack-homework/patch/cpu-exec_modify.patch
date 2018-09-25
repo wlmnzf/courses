@@ -1,0 +1,122 @@
+--- qemu-2.7.0/cpu-exec.c	2016-09-02 11:34:17.000000000 -0400
++++ qemu-2.7-homework/cpu-exec.c	2018-04-09 22:20:46.983684348 -0400
+@@ -42,6 +42,9 @@ typedef struct SyncClocks {
+     int64_t realtime_clock;
+ } SyncClocks;
+ 
++/* QEMU-HOMEWORK SHADOW STACK module function */
++ShadowStack sstack1;
++
+ #if !defined(CONFIG_USER_ONLY)
+ /* Allow the guest to have a max 3ms advance.
+  * The difference between the 2 clocks could therefore
+@@ -142,6 +145,11 @@ static inline tcg_target_ulong cpu_tb_ex
+     int tb_exit;
+     uint8_t *tb_ptr = itb->tc_ptr;
+ 
++    /*  QEMU-HOMEWORK -ss command options
++     *  SHADOW STACK module */
++    X86CPU *tmpcpu = X86_CPU(cpu);
++    target_ulong pc_var;
++
+     qemu_log_mask_and_addr(CPU_LOG_EXEC, itb->pc,
+                            "Trace %p [" TARGET_FMT_lx "] %s\n",
+                            itb->tc_ptr, itb->pc, lookup_symbol(itb->pc));
+@@ -193,6 +201,18 @@ static inline tcg_target_ulong cpu_tb_ex
+          */
+         cpu->tcg_exit_req = 0;
+     }
++    /*  QEMU-HOMEWORK -ss command options
++     *  SHADOW STACK module */
++    if(cas_shadowstack && itb->RETFlag){
++	pc_var = ShadowStackPop();
++
++	    /************************************
++	     *
++	     *               TODO...	
++	     *	
++	     ************************************/
++	assert(tmpcpu->env.eip == pc_var);
++        }
+     return ret;
+ }
+ 
+@@ -319,6 +339,54 @@ found:
+     return tb;
+ }
+ 
++/* GRIN TRA/SHADOW STACK module funciton */
++void ShadowStackInit(void)
++{
++    ShadowStack *ss;
++    ss = &sstack1;
++	ss->top = 0;
++	ss->MaxSize = 50;
++	ss->stack = (target_ulong *)malloc(50*sizeof(target_ulong));
++	if(!ss->stack){
++		fprintf(stderr,"Shadow stack inital failed!\n");
++	}
++}
++
++target_ulong ShadowStackPop(void)
++{
++    target_ulong x;
++    ShadowStack *ss;
++    ss = &sstack1;
++
++	if(ss->top == 0){
++		fprintf(stderr,"Pop shadow stack failed!\n");
++		x = 0;
++		return x;
++	}
++	x = ss->stack[ss->top];
++	ss->top--;
++	if(ss->top == 0){
++		//free(ss->stack);
++	}
++
++	return x;
++}
++
++void ShadowStackPush(target_ulong x)
++{
++    ShadowStack *ss;
++    ss = &sstack1;
++	if(ss->top >= ss->MaxSize)
++	{
++		ss->stack = realloc(ss->stack,2*ss->MaxSize*sizeof(target_ulong));
++		ss->MaxSize = 2*ss->MaxSize;
++	}
++	ss->top++;
++	ss->stack[ss->top] = x;
++
++}
++/*********** end module ***********/
++
+ static inline TranslationBlock *tb_find_fast(CPUState *cpu,
+                                              TranslationBlock **last_tb,
+                                              int tb_exit)
+@@ -356,9 +424,22 @@ static inline TranslationBlock *tb_find_
+ #endif
+     /* See if we can patch the calling TB. */
+     if (*last_tb && !qemu_loglevel_mask(CPU_LOG_TB_NOCHAIN)) {
+-        tb_add_jump(*last_tb, tb_exit, tb);
++        //tb_add_jump(*last_tb, tb_exit, tb);
+     }
+     tb_unlock();
++
++    /* QEMU-HOMEWORK -ss command options 
++     * SHADOW STACK module function */
++    if(cas_shadowstack){
++	if(tb->CALLFlag == 1){
++	    /************************************
++	     *
++	     *               TODO...	
++	     *	
++	     ************************************/
++	}
++    }
++
+     return tb;
+ }
+ 

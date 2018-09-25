@@ -1,0 +1,40 @@
+--- qemu-2.7.0/include/exec/exec-all.h	2016-09-02 11:34:20.000000000 -0400
++++ qemu-2.7-homework/include/exec/exec-all.h	2018-04-09 07:59:45.041811524 -0400
+@@ -211,6 +211,16 @@ static inline void tlb_flush_by_mmuidx(C
+ #define USE_DIRECT_JUMP
+ #endif
+ 
++/* QEMU-HOMEWORK -ss command options, SHADOW STACK module */
++struct shadow_stack{
++	target_ulong *stack;
++	int top;
++	int MaxSize;
++};
++target_ulong ShadowStackPop(void);
++void ShadowStackPush(target_ulong x);
++void ShadowStackInit(void);
++
+ struct TranslationBlock {
+     target_ulong pc;   /* simulated PC corresponding to this block (EIP + CS base) */
+     target_ulong cs_base; /* CS base for this block */
+@@ -262,6 +272,11 @@ struct TranslationBlock {
+      */
+     uintptr_t jmp_list_next[2];
+     uintptr_t jmp_list_first;
++
++    /* QEMU-HOMEWORK -ss command options, SHADOW STACK module */
++    int CALLFlag;
++    target_ulong next_insn;
++    int RETFlag;
+ };
+ 
+ void tb_free(TranslationBlock *tb);
+@@ -415,6 +430,8 @@ bool memory_region_is_unassigned(MemoryR
+ /* vl.c */
+ extern int singlestep;
+ 
++extern int cas_shadowstack; //QEMU-HOMEWORK -ss command options, SHADOW STACK module
++
+ /* cpu-exec.c, accessed with atomic_mb_read/atomic_mb_set */
+ extern CPUState *tcg_current_cpu;
+ extern bool exit_request;

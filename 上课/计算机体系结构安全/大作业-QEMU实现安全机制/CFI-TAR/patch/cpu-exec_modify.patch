@@ -1,0 +1,92 @@
+--- qemu-2.7.0/cpu-exec.c	2016-09-02 11:34:17.000000000 -0400
++++ homesrc/cpu-exec.c	2018-04-10 23:29:16.152536097 -0400
+@@ -42,6 +42,7 @@ typedef struct SyncClocks {
+     int64_t realtime_clock;
+ } SyncClocks;
+ 
++
+ #if !defined(CONFIG_USER_ONLY)
+ /* Allow the guest to have a max 3ms advance.
+  * The difference between the 2 clocks could therefore
+@@ -133,6 +134,37 @@ static void init_delay_params(SyncClocks
+ }
+ #endif /* CONFIG USER ONLY */
+ 
++/* QEMU-HOMEWORK function module
++ * MONITOR JMP module */
++static inline void grin_handle_jmp()
++{
++	/******************************
++	 *
++	 *           TODO.....
++	 *
++	 ******************************/
++}
++/* QEMU-HOMEWORK function module
++ * MONITOR CALL module */
++static inline  void grin_handle_call()
++{
++	/******************************
++	 *
++	 *           TODO.....
++	 *
++	 ******************************/	
++}
++/* QEMU-HOMEWORK function module
++ * MONITOR RET module */
++static inline void grin_handle_ret()
++{
++	/******************************
++	 *
++	 *           TODO.....
++	 *
++	 ******************************/
++}
++
+ /* Execute a TB, and fix up the CPU state afterwards if necessary */
+ static inline tcg_target_ulong cpu_tb_exec(CPUState *cpu, TranslationBlock *itb)
+ {
+@@ -142,6 +174,10 @@ static inline tcg_target_ulong cpu_tb_ex
+     int tb_exit;
+     uint8_t *tb_ptr = itb->tc_ptr;
+ 
++    /* QEMU-HOMEWORK, MONITOR variable module */
++    X86CPU *tmpcpu = X86_CPU(cpu);
++    target_ulong pc_var;
++
+     qemu_log_mask_and_addr(CPU_LOG_EXEC, itb->pc,
+                            "Trace %p [" TARGET_FMT_lx "] %s\n",
+                            itb->tc_ptr, itb->pc, lookup_symbol(itb->pc));
+@@ -193,6 +229,24 @@ static inline tcg_target_ulong cpu_tb_ex
+          */
+         cpu->tcg_exit_req = 0;
+     }
++
++    /* Hint: In this function, tmpcpu->env.eip 
++     * has pointed to next TB address. (jmp to/ret to/call to TB address) 
++     * Please specify arguements for grin_handle_* function.	         */
++    /* QEMU-HOMEWORK, MONITOR JMP module */
++        if(coarsecfi_enabled&&itb->JmpFlagM){
++	    grin_handle_jmp();
++        }
++
++    /* QEMU-HOMEWORK, MONITOR CALL module */
++        if (coarsecfi_enabled&&itb->CallFlagM){
++            grin_handle_call();
++        }
++        /* QEMU-HOMEWORK, MONITOR RET module */
++        if (coarsecfi_enabled&&itb->RetFlagM){
++            grin_handle_ret();
++        }
++
+     return ret;
+ }
+ 
+@@ -622,6 +676,7 @@ int cpu_exec(CPUState *cpu)
+             for(;;) {
+                 cpu_handle_interrupt(cpu, &last_tb);
+                 tb = tb_find_fast(cpu, &last_tb, tb_exit);
++
+                 cpu_loop_exec_tb(cpu, tb, &last_tb, &tb_exit, &sc);
+                 /* Try to align the host and virtual clocks
+                    if the guest is in advance */

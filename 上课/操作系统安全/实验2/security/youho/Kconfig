@@ -1,0 +1,8 @@
+config     SECURITY_YOUHO
+   bool     "youho support"
+   depends on SECURITY
+   default     n
+   help
+     introduction of youho modules
+
+

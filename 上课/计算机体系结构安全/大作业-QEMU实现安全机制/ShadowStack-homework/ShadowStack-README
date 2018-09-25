@@ -1,0 +1,53 @@
+/*
+ * ShadowStack for qemu homework
+ *
+ *  Copyright (c) 2018 CAS Lab
+ *
+ * Have fun!
+ */
+
+影子栈：
+-说明：基于qemu的影子栈实现方式有很多种，我们只是利用其中一种情形实现。
+	  -你如果有其他的实现想法，不局限为一种，欢迎交流、实现、讨论。
+	  
+-原理：本影子栈的实现原理是通过标记TB块中是否含有call及ret指令来实现。
+	  -我们在原始栈中将返回地址转换为0，压入栈，将实际的返回地址压入影子栈。
+	  -因此，当我们判断原始栈中的返回地址不为0时，则认为程序受到攻击(修改返回地址)，
+	  -并且从影子栈弹出实际返回地址，让程序正常执行。
+	  
+-TB块说明：在qemu/include/exec/exec-all.h文件中增加定义TB块结构体	
+	  -我们在此结构体中添加了三个变量
+	   |---------
+	   + int CALLFlag; //标记此TB块是否有call指令
+       + target_ulong next_insn; //记录返回地址
+       + int RETFlag; //标记此TB块是否有ret指令
+	   |---------
+
+(漏洞攻击程序以本文件提供的说明为准)	   
+-步骤：
+	1.打补丁
+	   - cp *.patch qemu-2.7.0/
+	   - cd qemu-2.7.0
+	   - ./do_patch.sh 
+	   
+	2.实现逻辑
+	
+	3.测试
+	   - qemu-x86_64 -ss hello-test
+	   
+	4.验证攻击
+	   - 按照预备部分配置、编译、安装
+	   - cd rop_stack_overflow_gen/
+	   - qemu-x86_64 -ss vul
+	   - 开启另外一个终端
+	   - cd exploit/
+	   - python rop_stack_overflow.py
+	   
+	5.提交
+	  - diff -up 修改前文件  修改后文件 > 文件名_modify.patch
+	  
+	6.输出要求 
+	  - //被篡改的返回地址    影子栈中返回地址 
+	  - addr:                  shadow-stack-addr:
+	输出格式例子：
+		addr:400890    shadow-stack-addr:450618
